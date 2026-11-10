@@ -34,4 +34,18 @@ describe('hitRateLimit', () => {
     clearRateLimit(key);
     expect(hitRateLimit(key, opts, 0).limited).toBe(false);
   });
+  it('bounds memory consumption under distinct-key flooding', () => {
+    // Existing shorter-lived test keys are expired by this future instant.
+    const now = Date.now() + 24 * 60 * 60_000;
+    const limit = { max: 2, windowMs: 5_000 };
+    for (let i = 0; i < 20_000; i++) {
+      expect(hitRateLimit('capacity:' + i, limit, now).limited).toBe(false);
+    }
+    const overflow = hitRateLimit('capacity:overflow', limit, now);
+    expect(overflow.limited).toBe(true);
+    expect(overflow.retryAfterSeconds).toBeGreaterThan(0);
+    // Once the window passes, expired counters are swept and new keys work.
+    expect(hitRateLimit('capacity:new', limit, now + limit.windowMs).limited).toBe(false);
+  });
+
 });
