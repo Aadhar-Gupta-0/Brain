@@ -50,3 +50,23 @@ Keep the **same labeled dataset** for comparisons. These metrics do not measure 
 - This remains a developer-only evaluation tool, not a production monitoring service.
 
 Run the deterministic metric tests with `node --test tools/retrieval-eval-core.test.mjs`.
+
+## 4. Compare two release candidates
+
+Use the **same private labeled dataset**, tenant, retrieval mode, top-k, and evaluation settings for both runs. Save their aggregate-only JSON summaries, then check a release candidate:
+
+```bash
+node tools/retrieval-eval-compare.mjs /tmp/baseline.json /tmp/candidate.json
+```
+
+Optional positional thresholds specify the maximum absolute Recall@k loss, maximum absolute nDCG@k loss, and maximum percentage increase in p95 latency:
+
+```bash
+node tools/retrieval-eval-compare.mjs baseline.json candidate.json 0.01 0.01 15
+```
+
+The command exits with status **0** when the thresholds pass, **1** for a regression, and **2** for invalid input. Its output includes only metric deltas and pass/fail reasons, never queries or document contents.
+
+**Caveat:** The checker verifies that both reports have the same case count, `k`, and retrieval mode; it cannot prove they used the same query corpus or labels. Preserve the evaluation corpus separately and version it privately.
+
+The command is designed to be used in release gates; do not claim improved search quality until results have been collected from a meaningful real-world dataset.
