@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { addSchema, MAX_CONTENT } from './memories.js';
 import { searchSchema } from './search.js';
+import { chatSchema } from './chat.js';
 
 describe('memories addSchema bounds', () => {
   it('accepts a normal memory', () => {
@@ -47,5 +48,33 @@ describe('search searchSchema bounds', () => {
   it('rejects an over-long query and an oversized tag filter', () => {
     expect(searchSchema.safeParse({ q: 'x'.repeat(1001) }).success).toBe(false);
     expect(searchSchema.safeParse({ q: 'ok', tags: Array(51).fill('t') }).success).toBe(false);
+  });
+});
+
+
+describe('chat input cost and context bounds', () => {
+  it('accepts compact valid conversation history', () => {
+    expect(chatSchema.safeParse({
+      message: 'What changed last week?',
+      history: [{ role: 'user', content: 'Summarize our release' }],
+    }).success).toBe(true);
+  });
+
+  it('rejects overlong individual history items', () => {
+    expect(chatSchema.safeParse({
+      message: 'Summarize',
+      history: [{ role: 'assistant', content: 'a'.repeat(8_001) }],
+    }).success).toBe(false);
+  });
+
+  it('rejects more than 30 messages and empty items', () => {
+    expect(chatSchema.safeParse({
+      message: 'Summarize',
+      history: Array(31).fill({ role: 'user', content: 'ping' }),
+    }).success).toBe(false);
+    expect(chatSchema.safeParse({
+      message: 'Summarize',
+      history: [{ role: 'user', content: '' }],
+    }).success).toBe(false);
   });
 });
