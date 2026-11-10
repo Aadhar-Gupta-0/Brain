@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { buildCorsPolicy } from './cors-policy.js';
 import { logger } from 'hono/logger';
 import { registerAll } from '@companybrain/connectors';
 import { getEnv, type Variables } from './context.js';
@@ -35,18 +36,12 @@ export function createApp() {
   const app = new Hono<{ Variables: Variables }>();
 
   app.use('*', logger());
-  // Never reflect arbitrary origins while enabling credentialed CORS:
-  // that would let hostile websites read a user's cookie-authenticated data.
-  // Wildcard origins may use explicit bearer/API-key credentials only.
-  const allowAny = env.corsOrigins.includes('*');
+  // Wildcard CORS is intentionally non-credentialed. Explicit trusted
+  // origins may use cookie-based sessions.
   app.use(
     '*',
     cors({
-      origin: (origin) => {
-        if (allowAny) return '*';
-        return env.corsOrigins.includes(origin) ? origin : '';
-      },
-      credentials: !allowAny,
+      ...buildCorsPolicy(env.corsOrigins),
       allowHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
       allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     }),
