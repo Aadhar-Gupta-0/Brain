@@ -30,7 +30,13 @@ export function hitRateLimit(
 ): { limited: boolean; retryAfterSeconds: number } {
   const entry = store.get(key);
   if (!entry || now >= entry.resetAt) {
+    // Prevent unbounded memory growth under a stream of unique principals.
+    // Fail closed when all slots are occupied rather than evicting active
+    // brute-force counters and allowing attackers to reset their budget.
     if (store.size >= MAX_KEYS) sweepExpired(now);
+    if (!store.has(key) && store.size >= MAX_KEYS) {
+      return { limited: true, retryAfterSeconds: Math.max(1, Math.ceil(opts.windowMs / 1000)) };
+    }
     store.set(key, { count: 1, resetAt: now + opts.windowMs });
     return { limited: false, retryAfterSeconds: 0 };
   }
