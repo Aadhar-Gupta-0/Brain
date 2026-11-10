@@ -18,8 +18,16 @@ const chatSchema = z.object({
   spaceId: z.string().uuid().optional(),
   space: z.string().optional(),
   limit: z.number().int().min(1).max(50).optional(),
+  // Cap user-controlled conversation context before retrieval/model invocation.
+  // Unbounded history can otherwise multiply provider cost and memory use.
   history: z
-    .array(z.object({ role: z.enum(['user', 'assistant']), content: z.string() }))
+    .array(
+      z.object({
+        role: z.enum(['user', 'assistant']),
+        content: z.string().min(1).max(8_000),
+      }),
+    )
+    .max(30)
     .optional(),
 });
 
