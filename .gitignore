@@ -61,3 +61,8 @@ bench/*.run.json
 
 # UI audit artifacts (screenshots are large and regenerable)
 .goal/
+
+# Private retrieval evaluations can contain confidential workspace queries.
+private-eval/
+*.eval.jsonl
+retrieval-summary*.json
