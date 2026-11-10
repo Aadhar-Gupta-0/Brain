@@ -1,0 +1,131 @@
+name: Import Brain with deployment preflight
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/bootstrap.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Import source and run preflight tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --quiet --depth 1 --branch main 'https://github.com/aayambansal/companybrain.git' "$RUNNER_TEMP/upstream"
+          test "$(git -C "$RUNNER_TEMP/upstream" rev-parse HEAD)" = "84f06765310d6e9877d73dbcb71153a1d05aceb5"
+          rsync -a --exclude '.git' --exclude '.github' --exclude '.env' --exclude '.env.local' "$RUNNER_TEMP/upstream/" ./
+          python - <<'PY'
+          from pathlib import Path
+          tool=Path("tools/selfhost-preflight.mjs");tool.parent.mkdir(exist_ok=True)
+          tool.write_text("""#!/usr/bin/env node
+          /**
+           * Read-only security preflight for a self-hosted CompanyBrain deployment.
+           * No keys are printed or transmitted.
+           */
+          import { readFileSync } from 'node:fs';
+          
+          export function inspectEnv(text) {
+            const env = {};
+            for (const line of text.split(/\\r?\\n/)) {
+              const trimmed = line.trim();
+              if (!trimmed || trimmed.startsWith('#')) continue;
+              const split = trimmed.indexOf('=');
+              if (split < 1) continue;
+              const key = trimmed.slice(0, split).trim();
+              let value = trimmed.slice(split + 1).trim().replace(/^["']|["']$/g, '');
+              env[key] = value;
+            }
+            const findings = [];
+            const exposed = /^(0\\.0\\.0\\.0|::|\\[::\\])$/;
+            if (exposed.test(env.API_HOST || '127.0.0.1') && !env.ACCESS_TOKEN && (env.AUTH_MODE || 'single') !== 'multi') {
+              findings.push({ level:'critical', code:'PUBLIC_API_NO_AUTH', message:'Public API binding without access token or multi-user authentication' });
+            }
+            for (const key of ['JWT_SECRET','DATABASE_URL','ACCESS_TOKEN']) {
+              const value=env[key];
+              if (value && /^(change.?me|your.?secret|example|placeholder|default|123456)$/i.test(value)) {
+                findings.push({ level:'high', code:'PLACEHOLDER_SECRET', message:key+' uses a recognizable placeholder' });
+              }
+            }
+            if ((env.AUTH_MODE || 'single') === 'multi' && !env.JWT_SECRET) {
+              findings.push({ level:'high', code:'MISSING_JWT_SECRET', message:'Multi-user mode requires a server-side JWT secret' });
+            }
+            if (env.NODE_ENV === 'production' && !env.DATABASE_URL) {
+              findings.push({ level:'high', code:'MISSING_DATABASE_URL', message:'Production deployment requires a database URL' });
+            }
+            return findings;
+          }
+          if (process.argv[1] && import.meta.url === new URL('file://' + process.argv[1]).href) {
+            const file=process.argv[2];
+            if (!file) {
+              console.error('Usage: node tools/selfhost-preflight.mjs /path/to/private/.env');
+              process.exit(2);
+            }
+            try {
+              const findings=inspectEnv(readFileSync(file,'utf8'));
+              console.log(JSON.stringify({ result:findings.length ? 'review_required' : 'no_findings', findings },null,2));
+              process.exitCode=findings.length ? 1 : 0;
+            } catch {
+              console.error('Unable to read local configuration. No credentials were displayed.');
+              process.exitCode=2;
+            }
+          }
+          """)
+          Path("tools/selfhost-preflight.test.mjs").write_text("""import test from 'node:test';
+          import assert from 'node:assert/strict';
+          import { inspectEnv } from './selfhost-preflight.mjs';
+          test('detects publicly bound unauthenticated API', () => {
+            assert(inspectEnv('API_HOST=0.0.0.0\\nAUTH_MODE=single').some(x=>x.code==='PUBLIC_API_NO_AUTH'));
+          });
+          test('allows authenticated public API', () => {
+            assert(!inspectEnv('API_HOST=0.0.0.0\\nACCESS_TOKEN=long-unique-secret').some(x=>x.code==='PUBLIC_API_NO_AUTH'));
+          });
+          test('detects unsafe placeholders', () => {
+            assert(inspectEnv('JWT_SECRET=changeme').some(x=>x.code==='PLACEHOLDER_SECRET'));
+          });
+          test('checks multi-user JWT', () => {
+            assert(inspectEnv('AUTH_MODE=multi').some(x=>x.code==='MISSING_JWT_SECRET'));
+          });
+          test('does not log or include secret values', () => {
+            assert(!JSON.stringify(inspectEnv('ACCESS_TOKEN=supersecretvalue')).includes('supersecretvalue'));
+          });
+          """)
+          Path("docs/SELFHOST_PREFLIGHT.md").write_text("""# Self-hosted deployment preflight
+          
+          Run the included **offline, read-only** environment checker before enabling an externally accessible CompanyBrain service:
+          
+          \`\`\`bash
+          node tools/selfhost-preflight.mjs /absolute/path/to/your/private/.env
+          node --test tools/selfhost-preflight.test.mjs
+          \`\`\`
+          
+          The checker reports public binds without authentication, recognizable secret placeholders, and missing production configuration. It never sends telemetry or prints secret values.
+          
+          **Limits:** Passing the checker is not a security assessment. It does not prove TLS, firewall rules, tenant isolation, role permissions, RLS, backup security, or plugin trust. Follow the project's existing [SECURITY.md](../SECURITY.md) and production documentation.
+          
+          The preflight checker and its regression tests are an independent operational extension for this maintained edition; the original MIT copyright and contributor notices are retained.
+          """)
+          p=Path("README.md");s=p.read_text();s="""# Brain — Company Memory Platform (Independent Edition)
+          
+          This repository maintains and extends CompanyBrain, a self-hostable organizational memory system. The original authors' MIT copyright and contribution history are retained.
+          
+          **Added in this edition:** an offline, read-only self-hosting configuration preflight with security findings and regression tests. See [deployment preflight](docs/SELFHOST_PREFLIGHT.md).
+          
+          ---
+          
+          """+s
+          p.write_text(s)
+          
+          PY
+          node --test tools/selfhost-preflight.test.mjs
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Import CompanyBrain and add self-host security preflight'
+          git push origin HEAD:main
