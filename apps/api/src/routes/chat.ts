@@ -13,7 +13,7 @@ const app = new Hono<{ Variables: Variables }>();
 // both `/` and `/stream`.
 app.use('*', llmRateLimit);
 
-const chatSchema = z.object({
+export const chatSchema = z.object({
   message: z.string().min(1).max(8000),
   spaceId: z.string().uuid().optional(),
   space: z.string().optional(),
