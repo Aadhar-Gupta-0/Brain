@@ -31,7 +31,7 @@ test('refuses mismatched evaluation settings',()=>{
 });
 
 test('rejects invalid input and thresholds',()=>{
- assert.throws(()=>compareRetrievalReports(baseline,{...candidate,recallAtK:NaN}),/invalid/);
+ assert.throws(()=>compareRetrievalReports(baseline,{...candidate,recallAtK:NaN}),/not a valid/);
  assert.throws(()=>compareRetrievalReports(baseline,candidate,{maxRecallDrop:-1}),/nonnegative/);
 });
 
