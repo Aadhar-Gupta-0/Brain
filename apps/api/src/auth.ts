@@ -52,9 +52,12 @@ export async function resolveAuth(c: Context): Promise<AuthContext | null> {
       // expired key must NEVER downgrade to the unauthenticated default org.
       return resolveApiKey(token);
     }
-    if (env.accessToken) {
-      if (token !== env.accessToken) return null;
-    }
+    // In open local single-user mode, an entirely anonymous request is
+    // intentional. But credentials explicitly supplied by the caller must
+    // always be valid; an arbitrary Bearer value must never gain default-org
+    // access by silently downgrading to anonymous.
+    if (token && (!env.accessToken || token !== env.accessToken)) return null;
+    if (!token && env.accessToken) return null;
     const orgId = await ensureDefaultOrg();
     return { orgId, scopes: ['*'], via: 'single' };
   }
