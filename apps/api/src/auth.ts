@@ -48,8 +48,9 @@ export async function resolveAuth(c: Context): Promise<AuthContext | null> {
   // is set, it gates access so an exposed instance is not wide open.
   if (env.authMode === 'single') {
     if (token && token.startsWith('cb_')) {
-      const viaKey = await resolveApiKey(token);
-      if (viaKey) return viaKey;
+      // A caller explicitly presented an API key. An invalid, revoked or
+      // expired key must NEVER downgrade to the unauthenticated default org.
+      return resolveApiKey(token);
     }
     if (env.accessToken) {
       if (token !== env.accessToken) return null;
