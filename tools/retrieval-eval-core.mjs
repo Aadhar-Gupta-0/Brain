@@ -10,9 +10,15 @@ export function rankMetrics(expectedIds, observedIds, k) {
     throw new Error('k must be an integer between 1 and 100');
   }
   const relevant = new Set(expectedIds.map(String));
-  const observed = [...new Set(observedIds.map(String))].slice(0, k);
+  // Evaluate the actual returned top-k slots before deduplication. A search
+  // engine that returns duplicates wastes ranking capacity and must not earn
+  // credit for a relevant result originally ranked outside the cutoff.
+  const observed = observedIds.slice(0, k).map(String);
+  const seen = new Set();
   let hits = 0, reciprocalRank = 0, dcg = 0;
   observed.forEach((id, index) => {
+    if (seen.has(id)) return;
+    seen.add(id);
     if (!relevant.has(id)) return;
     hits++;
     if (!reciprocalRank) reciprocalRank = 1 / (index + 1);
