@@ -1,0 +1,253 @@
+@import 'tailwindcss';
+
+/*
+  CompanyBrain dashboard design system.
+
+  Identity: a precision instrument panel at night. The light theme's optical
+  instrument, carried into a dark room. Deep blue-slate ground (not black, not
+  violet), surfaces that lift in legible steps, iris reserved for the user's own
+  actions and selection, amber reserved for live machine activity (indexing,
+  syncing). Depth encodes hierarchy; it is never decoration.
+
+  Every text pair below is verified against WCAG AA (>=4.5:1 body, >=3:1 for
+  control boundaries) on the surface it actually sits on.
+*/
+
+@theme {
+  /* Surfaces, deepest to highest. The rail is deeper than the canvas so the
+     navigation reads as chassis and the content reads as the work. */
+  --color-rail: oklch(0.145 0.013 266);
+  --color-bg: oklch(0.17 0.014 266);
+  --color-bg-subtle: oklch(0.155 0.013 266);
+  --color-surface: oklch(0.205 0.014 266);
+  --color-surface-2: oklch(0.235 0.015 266);
+  --color-surface-hover: oklch(0.26 0.016 266);
+  --color-border: oklch(0.3 0.014 266);
+  --color-border-strong: oklch(0.51 0.018 266); /* 3.3:1 on bg: control boundaries */
+
+  /* Ink. inkFaint is the floor and still clears 4.5:1 on surface (5.76:1). */
+  --color-ink: oklch(0.96 0.006 266);
+  --color-ink-muted: oklch(0.76 0.014 266);
+  --color-ink-faint: oklch(0.66 0.014 266);
+
+  /* Iris: the user's own actions, selection, focus. Never decoration. */
+  --color-primary: oklch(0.68 0.17 264);
+  --color-primary-strong: oklch(0.75 0.16 264);
+  --color-primary-ink: oklch(0.16 0.02 266);
+  --color-primary-soft: oklch(0.68 0.17 264 / 0.14);
+  --color-primary-line: oklch(0.68 0.17 264 / 0.32);
+
+  /* Amber: live machine activity. Indexing, syncing, streaming. */
+  --color-spark: oklch(0.8 0.14 68);
+  --color-spark-soft: oklch(0.8 0.14 68 / 0.15);
+  --color-spark-line: oklch(0.8 0.14 68 / 0.32);
+
+  /* Status. Each clears 4.5:1 on surface; each pairs with a shape or label so
+     hue is never the only signal. */
+  --color-success: oklch(0.75 0.16 158);
+  --color-success-soft: oklch(0.75 0.16 158 / 0.14);
+  --color-warn: oklch(0.8 0.14 70);
+  --color-warn-soft: oklch(0.8 0.14 70 / 0.14);
+  --color-danger: oklch(0.7 0.19 22);
+  --color-danger-soft: oklch(0.7 0.19 22 / 0.15);
+  --color-info: oklch(0.74 0.13 248);
+  --color-info-soft: oklch(0.74 0.13 248 / 0.14);
+
+  /* On a dark ground the readable status text IS the bright tone, so the
+     `-ink` names (a light-theme concept: a darkened variant for text on a
+     tinted chip) alias straight to the base. Kept so existing markup stays
+     correct instead of falling back to an unstyled colour. */
+  --color-success-ink: var(--color-success);
+  --color-warn-ink: var(--color-warn);
+  --color-danger-ink: var(--color-danger);
+  --color-info-ink: var(--color-info);
+
+  /* Type. One UI family carrying every weight, plus mono for data and IDs.
+     No display face in the product surface: `--font-display` deliberately
+     resolves to the UI family so existing `font-display` markup renders as
+     weight contrast rather than a display face in a dashboard. */
+  --font-sans: 'Switzer', ui-sans-serif, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Switzer', ui-sans-serif, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* Fixed rem scale (product UI, not fluid), ratio ~1.2 */
+  --text-2xs: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Elevation reads as depth in a dark room: a real shadow plus a hairline
+     top highlight, like light catching a machined edge. */
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.4);
+  --shadow-md: 0 8px 24px oklch(0 0 0 / 0.45);
+  --shadow-lg: 0 24px 60px oklch(0 0 0 / 0.55);
+  --bevel: inset 0 1px 0 oklch(1 0 0 / 0.05);
+
+  --z-dropdown: 40;
+  --z-sticky: 50;
+  --z-backdrop: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+  --z-tooltip: 90;
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-primary-soft);
+    color: var(--color-ink);
+  }
+
+  /* One focus treatment across the whole app. */
+  :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Standard scrollbars, restyled to the palette rather than reinvented. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-strong) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--color-ink-faint);
+    background-clip: content-box;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    font-weight: 600;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  /* Titles and body copy come from the user's own documents, so a single
+     unbroken token (a URL, a hash, a pasted identifier) must wrap rather than
+     widen the page. `anywhere` rather than `break-word` on purpose: only
+     `anywhere` also shrinks the element's min-content size, which is what lets
+     a flex or grid child actually give up the space instead of forcing the
+     track wider. Applies everywhere so no surface has to remember. */
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  li,
+  dd,
+  dt,
+  figcaption,
+  code {
+    overflow-wrap: anywhere;
+  }
+  /* Numerals line up in tables, counts, and scores. */
+  [data-numeric],
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* A panel: the primary content container. The bevel is the instrument
+     detail, a 1px highlight where light would catch the top edge.
+     `.card` is the established name across the app and stays as an alias. */
+  .panel,
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--bevel);
+  }
+
+  /* Faint measurement grid for empty and auth surfaces. */
+  .bg-grid {
+    background-image:
+      linear-gradient(var(--color-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 10%, transparent 72%);
+  }
+
+  /* Live activity: amber, and a shape that moves, so it reads without hue. */
+  .live-dot {
+    position: relative;
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--color-spark);
+  }
+  .live-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 0 var(--color-spark-line);
+    animation: cb-ping 1.8s var(--ease-out-quart) infinite;
+  }
+}
+
+@keyframes cb-ping {
+  0% {
+    box-shadow: 0 0 0 0 var(--color-spark-line);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+@keyframes cb-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

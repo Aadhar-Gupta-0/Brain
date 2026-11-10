@@ -1,0 +1,145 @@
+import type { LlmProvider, CompleteOptions, ImageInput } from './types.js';
+import { sseLines } from './sse.js';
+
+const IMAGE_PROMPT =
+  'Extract all text from this image verbatim (OCR). Then, on a new line starting with "Description:", briefly describe what the image shows. If there is no text, just give the description.';
+
+/** Anthropic Claude via the Messages API (no SDK dependency). */
+export class AnthropicProvider implements LlmProvider {
+  readonly name = 'anthropic';
+  readonly model: string;
+  readonly available: boolean;
+  readonly supportsVision = true;
+  private apiKey: string;
+  private baseUrl = 'https://api.anthropic.com/v1';
+  // Newer Claude models reject the `temperature` param ("deprecated for this
+  // model"). Once we see that, stop sending it for this instance.
+  private tempUnsupported = false;
+
+  constructor(opts: { apiKey?: string; model?: string }) {
+    this.apiKey = opts.apiKey ?? '';
+    this.model = opts.model ?? 'claude-sonnet-5';
+    this.available = Boolean(this.apiKey);
+  }
+
+  private headers() {
+    return {
+      'x-api-key': this.apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+    };
+  }
+
+  private buildBody(
+    opts: CompleteOptions,
+    extra: Record<string, unknown> = {},
+  ): Record<string, unknown> {
+    const body: Record<string, unknown> = {
+      model: this.model,
+      max_tokens: opts.maxTokens ?? 1024,
+      system: opts.system,
+      messages: opts.messages.map((m) => ({
+        role: m.role === 'system' ? 'user' : m.role,
+        content: m.content,
+      })),
+      ...extra,
+    };
+    if (!this.tempUnsupported) body.temperature = opts.temperature ?? 0.2;
+    return body;
+  }
+
+  /** POST, retrying once without `temperature` if the model rejects it. */
+  private async postMessages(body: Record<string, unknown>): Promise<Response> {
+    // Bound the request so a hung completion can't stall the caller. 90s is
+    // generous enough for long (including streamed) generations.
+    const post = (b: Record<string, unknown>) =>
+      fetch(`${this.baseUrl}/messages`, {
+        method: 'POST',
+        signal: AbortSignal.timeout(90_000),
+        headers: this.headers(),
+        body: JSON.stringify(b),
+      });
+    const res = await post(body);
+    if (res.status === 400 && 'temperature' in body) {
+      const text = await res.clone().text();
+      if (/temperature/i.test(text)) {
+        this.tempUnsupported = true;
+        const { temperature, ...rest } = body;
+        return post(rest);
+      }
+    }
+    return res;
+  }
+
+  async describeImage(image: ImageInput, prompt?: string): Promise<string> {
+    this.assert();
+    const res = await fetch(`${this.baseUrl}/messages`, {
+      method: 'POST',
+      signal: AbortSignal.timeout(120_000),
+      headers: {
+        'x-api-key': this.apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: this.model,
+        max_tokens: 1024,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'image',
+                source: { type: 'base64', media_type: image.mediaType, data: image.base64 },
+              },
+              { type: 'text', text: prompt ?? IMAGE_PROMPT },
+            ],
+          },
+        ],
+      }),
+    });
+    if (!res.ok) throw new Error(`Anthropic vision failed: ${res.status} ${await res.text()}`);
+    const json = (await res.json()) as { content: { type: string; text?: string }[] };
+    return json.content
+      .filter((c) => c.type === 'text')
+      .map((c) => c.text ?? '')
+      .join('');
+  }
+
+  async complete(opts: CompleteOptions): Promise<string> {
+    this.assert();
+    const res = await this.postMessages(this.buildBody(opts));
+    if (!res.ok) throw new Error(`Anthropic completion failed: ${res.status} ${await res.text()}`);
+    const json = (await res.json()) as { content: { type: string; text?: string }[] };
+    return json.content
+      .filter((c) => c.type === 'text')
+      .map((c) => c.text ?? '')
+      .join('');
+  }
+
+  async *stream(opts: CompleteOptions): AsyncIterable<string> {
+    this.assert();
+    const res = await this.postMessages(this.buildBody(opts, { stream: true }));
+    if (!res.ok || !res.body) throw new Error(`Anthropic stream failed: ${res.status}`);
+    for await (const evt of sseLines(res.body)) {
+      if (!evt.startsWith('data:')) continue;
+      const data = evt.slice(5).trim();
+      if (!data || data === '[DONE]') continue;
+      try {
+        const parsed = JSON.parse(data) as {
+          type: string;
+          delta?: { type: string; text?: string };
+        };
+        if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
+          yield parsed.delta.text;
+        }
+      } catch {
+        // ignore keep-alive / non-json lines
+      }
+    }
+  }
+
+  private assert() {
+    if (!this.available) throw new Error('ANTHROPIC_API_KEY is not set; cannot generate.');
+  }
+}

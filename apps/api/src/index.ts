@@ -1,0 +1,101 @@
+import { serve } from '@hono/node-server';
+import { runMigrations, waitForDatabase, organizations } from '@companybrain/db';
+import { createApp } from './app.js';
+import { getEngine, getEnv, ensureDefaultOrg } from './context.js';
+import { applyProviders } from './routes/providers.js';
+import { startScheduler } from './scheduler.js';
+import { createShutdown } from './shutdown.js';
+import { banner } from './banner.js';
+
+async function main() {
+  const env = getEnv();
+
+  // Backstop: a stray unhandled promise rejection (e.g. a best-effort background
+  // write that failed) should be logged, not take the whole server down.
+  process.on('unhandledRejection', (reason) => {
+    console.error('[api] unhandled rejection:', reason);
+  });
+
+  // Auto-migrate on boot unless disabled. Keeps `docker compose up` a one-liner.
+  if (process.env.AUTO_MIGRATE !== 'false') {
+    // Wait for the database first: outside docker-compose (which gates us on a
+    // Postgres healthcheck) it may not accept connections for a few seconds, and
+    // migrating too early would fail once and leave the app with no schema.
+    const ready = await waitForDatabase({ logger: (m) => console.error(`[api] ${m}`) });
+    if (!ready) {
+      console.error('[api] database did not become reachable; skipping migrations');
+    } else {
+      try {
+        await runMigrations({ logger: () => {} });
+      } catch (err) {
+        console.error('[api] migration failed:', err);
+      }
+    }
+  }
+
+  const engine = getEngine();
+
+  // Apply any persisted provider settings (keys picked in the dashboard).
+  try {
+    if (env.authMode === 'single') {
+      const orgId = await ensureDefaultOrg();
+      await applyProviders(orgId);
+    } else {
+      const rows = await engine.db
+        .select({ id: organizations.id, settings: organizations.settings })
+        .from(organizations);
+      const withProviders = rows.find(
+        (r) => (r.settings as Record<string, unknown> | undefined)?.providers,
+      );
+      if (withProviders) await applyProviders(withProviders.id);
+    }
+  } catch (err) {
+    console.error('[api] provider settings not applied:', err);
+  }
+
+  const app = createApp();
+
+  // Periodic connector syncs (opt-in per connection via syncIntervalMinutes).
+  const scheduler = process.env.DISABLE_SCHEDULER !== 'true' ? startScheduler() : null;
+
+  const server = serve({ fetch: app.fetch, hostname: env.host, port: env.port }, () => {
+    process.stdout.write(
+      banner({
+        version: env.version,
+        port: env.port,
+        embedding: `${engine.embedder.name} (${engine.embedder.model})`,
+        llm: `${engine.llm.name} (${engine.llm.model})`,
+      }),
+    );
+  });
+
+  // Graceful shutdown on a container stop or Ctrl-C (see ./shutdown).
+  const shutdown = createShutdown({
+    stopScheduler: scheduler ? () => clearInterval(scheduler) : null,
+    closeServer: () =>
+      new Promise<void>((resolve) => {
+        server.close(() => resolve());
+        // server.close() alone waits for every keep-alive socket to go idle,
+        // which a browser or dev dashboard holds open for a minute or more. Drop
+        // the idle ones immediately, then cut anything still streaming after a
+        // short grace period, so Ctrl-C exits promptly instead of being force
+        // killed by the process supervisor.
+        const s = server as unknown as {
+          closeIdleConnections?: () => void;
+          closeAllConnections?: () => void;
+        };
+        s.closeIdleConnections?.();
+        setTimeout(() => s.closeAllConnections?.(), 2000).unref?.();
+      }),
+    closeEngine: () => engine.close(),
+    exit: (code) => process.exit(code),
+    log: (message) => console.error(message),
+  });
+  process.on('SIGTERM', () => void shutdown('SIGTERM'));
+  process.on('SIGINT', () => void shutdown('SIGINT'));
+}
+
+main().catch((err) => {
+  console.error('[api] fatal:', err);
+  process.exit(1);
+});
