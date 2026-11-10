@@ -46,4 +46,27 @@ describe('reciprocalRankFusion', () => {
     expect(out[0]!.score).toBeCloseTo(1 / 61);
     expect(out[1]!.score).toBeCloseTo(1 / 62);
   });
+
+  it('does not give the same document multiple contributions from one list', () => {
+    const out = reciprocalRankFusion([{ items: ['duplicate', 'duplicate', 'other'] }], id, 0);
+    expect(out.find((row) => row.item === 'duplicate')!.score).toBe(1);
+    expect(out.find((row) => row.item === 'duplicate')!.components).toEqual({ 0: 1 });
+  });
+
+  it('still combines a repeated document once across distinct lists', () => {
+    const out = reciprocalRankFusion(
+      [{ items: ['a', 'a'] }, { items: ['a', 'a'] }],
+      id,
+      0,
+    );
+    expect(out[0]!.score).toBe(2);
+  });
+
+  it('rejects negative, NaN and infinite weights or k values', () => {
+    expect(() => reciprocalRankFusion([{ items: ['a'] }], id, -1)).toThrow(RangeError);
+    expect(() => reciprocalRankFusion([{ items: ['a'] }], id, Number.NaN)).toThrow(RangeError);
+    expect(() => reciprocalRankFusion([{ items: ['a'], weight: -1 }], id)).toThrow(RangeError);
+    expect(() => reciprocalRankFusion([{ items: ['a'], weight: Number.POSITIVE_INFINITY }], id)).toThrow(RangeError);
+  });
+
 });
