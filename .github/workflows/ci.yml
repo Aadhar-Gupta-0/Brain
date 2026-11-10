@@ -1,7 +1,12 @@
-name: Brain preflight regression
+name: Brain quality gates
 on: [push, pull_request]
+permissions:
+  contents: read
+concurrency:
+  group: brain-ci-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  test:
+  preflight:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -9,3 +14,26 @@ jobs:
         with:
           node-version: '22'
       - run: node --test tools/selfhost-preflight.test.mjs
+      - run: |
+          grep -q '127.0.0.1:${API_PORT:-3333}:3333' docker-compose.yml
+          grep -q '127.0.0.1:${POSTGRES_PORT:-5432}:5432' docker-compose.yml
+
+  api-and-retrieval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - name: Install workspace
+        run: pnpm install --frozen-lockfile
+      - name: API TypeScript typecheck
+        run: pnpm --filter @companybrain/api typecheck
+      - name: Core TypeScript typecheck
+        run: pnpm --filter @companybrain/core typecheck
+      - name: API regression tests
+        run: pnpm --filter @companybrain/api test
+      - name: Search and retrieval regression tests
+        run: pnpm --filter @companybrain/core test
