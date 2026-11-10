@@ -24,6 +24,12 @@ test('duplicate returned documents do not inflate scores', () => {
   assert.deepEqual(rankMetrics(['a'], ['a', 'a', 'x'], 3), rankMetrics(['a'], ['a', 'x'], 3));
 });
 
+test('duplicate result slots cannot pull a relevant hit from beyond top-k', () => {
+  const m = rankMetrics(['a'], ['noise', 'noise', 'a'], 2);
+  assert.equal(m.recall, 0);
+  assert.equal(m.reciprocalRank, 0);
+});
+
 test('validation bounds evaluation inputs', () => {
   assert.throws(() => rankMetrics([], [], 10));
   assert.throws(() => rankMetrics(['a'], [], 0));
