@@ -4,6 +4,22 @@ This repository maintains and extends CompanyBrain, a self-hostable organization
 
 **Added in this edition:** an offline, read-only self-hosting configuration preflight with security findings and regression tests. See [deployment preflight](docs/SELFHOST_PREFLIGHT.md).
 
+## Brain hardening and evaluation upgrade
+
+This maintained edition adds practical product and security improvements on top of the upstream platform:
+
+- **Authentication downgrade protection:** invalid or revoked API keys and arbitrary bearer tokens cannot silently fall back into the single-user default workspace.
+- **Safer exposure defaults:** PostgreSQL, API, and web ports bind to localhost in Docker Compose, and wildcard CORS no longer enables credentialed cross-origin access.
+- **Bounded AI requests:** client-provided chat history is limited to 30 messages, at most 8,000 characters each.
+- **More reliable search fusion:** duplicate IDs from one ranked list cannot artificially inflate reciprocal-rank relevance scores.
+- **Rate-limit memory safety:** distinct-principal flooding no longer grows the in-memory counter store without bound.
+- **Measured retrieval quality:** a private evaluation CLI calculates Recall@k, MRR@k, nDCG@k, hit rate and latency percentiles without printing sensitive queries or tokens.
+- **Expanded CI:** TypeScript typechecks, API and core regression suites, offline deployment preflight tests, and retrieval metrics tests.
+
+Read [retrieval evaluation](docs/RETRIEVAL_EVALUATION.md) and [self-host preflight](docs/SELFHOST_PREFLIGHT.md).
+
+**Deployment caveat:** These are engineering improvements, not a claim of independent production security certification, third-party penetration testing, or new customer traction. The source retains its existing upstream license and acknowledgements.
+
 ---
 
 <div align="center">
