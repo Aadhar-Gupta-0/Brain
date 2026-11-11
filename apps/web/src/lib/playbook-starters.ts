@@ -77,6 +77,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'legal-contracts', category: 'Legal', title: 'Contract review process', topic: 'How are contracts drafted, reviewed, negotiated and approved before signing?' },
   { id: 'legal-retention', category: 'Legal', title: 'Records retention', topic: 'What is the documented schedule for retaining and deleting business and customer records?' },
   { id: 'legal-privacy', category: 'Legal', title: 'Privacy requests', topic: 'How do we verify and respond to data access, correction and deletion requests?' },
+  { id: 'legal-ip', category: 'Legal', title: 'Intellectual property', topic: 'How are employee inventions, open-source usage and intellectual property approvals managed?' },
 ];
 
 export function filterPlaybookStarters(
