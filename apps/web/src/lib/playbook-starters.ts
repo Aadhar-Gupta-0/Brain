@@ -44,6 +44,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'ops-capacity', category: 'Operations', title: 'Capacity planning', topic: 'How do we forecast infrastructure capacity, cost and performance requirements?' },
   { id: 'ops-backups', category: 'Operations', title: 'Backup and restore', topic: 'Where are backup responsibilities, recovery targets and restore exercises documented?' },
   { id: 'ops-continuity', category: 'Operations', title: 'Business continuity', topic: 'What plans cover critical business processes when systems, offices or vendors become unavailable?' },
+  { id: 'fin-budget', category: 'Finance', title: 'Annual budgeting', topic: 'How do departments propose, approve and monitor their annual budgets?' },
 ];
 
 export function filterPlaybookStarters(
