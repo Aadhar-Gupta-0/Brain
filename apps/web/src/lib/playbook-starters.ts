@@ -69,6 +69,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'mkt-content', category: 'Marketing', title: 'Editorial workflow', topic: 'How do we research, draft, approve and publish customer-facing content?' },
   { id: 'mkt-attribution', category: 'Marketing', title: 'Attribution reporting', topic: 'What methods and limitations apply to measuring marketing-sourced pipeline and revenue?' },
   { id: 'mkt-events', category: 'Marketing', title: 'Event follow-up', topic: 'What is our process for event planning, lead capture and post-event follow-up?' },
+  { id: 'data-governance', category: 'Data', title: 'Data ownership', topic: 'Who owns our core datasets, and how are data quality and access issues escalated?' },
 ];
 
 export function filterPlaybookStarters(
