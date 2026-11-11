@@ -76,6 +76,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'data-experiments', category: 'Data', title: 'Experiment measurement', topic: 'How do we design valid experiment analysis and interpret results before rollout?' },
   { id: 'legal-contracts', category: 'Legal', title: 'Contract review process', topic: 'How are contracts drafted, reviewed, negotiated and approved before signing?' },
   { id: 'legal-retention', category: 'Legal', title: 'Records retention', topic: 'What is the documented schedule for retaining and deleting business and customer records?' },
+  { id: 'legal-privacy', category: 'Legal', title: 'Privacy requests', topic: 'How do we verify and respond to data access, correction and deletion requests?' },
 ];
 
 export function filterPlaybookStarters(
