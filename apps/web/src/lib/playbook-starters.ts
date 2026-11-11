@@ -42,6 +42,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'ops-incident', category: 'Operations', title: 'Service incident operations', topic: 'Who coordinates customer communications, incident ownership and follow-up during service disruptions?' },
   { id: 'ops-change', category: 'Operations', title: 'Change management', topic: 'Which operational changes require review, approval, communication and a rollback plan?' },
   { id: 'ops-capacity', category: 'Operations', title: 'Capacity planning', topic: 'How do we forecast infrastructure capacity, cost and performance requirements?' },
+  { id: 'ops-backups', category: 'Operations', title: 'Backup and restore', topic: 'Where are backup responsibilities, recovery targets and restore exercises documented?' },
 ];
 
 export function filterPlaybookStarters(
