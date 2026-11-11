@@ -27,6 +27,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'eng-rollback', category: 'Engineering', title: 'Rollback procedures', topic: 'How do we decide to roll back a failed deployment, execute the rollback and verify recovery?' },
   { id: 'eng-architecture', category: 'Engineering', title: 'Architecture decisions', topic: 'Where are our architecture decisions recorded, and how are trade-offs reviewed and approved?' },
   { id: 'eng-code-review', category: 'Engineering', title: 'Code review standards', topic: 'What are our documented expectations for pull request reviews, ownership and required checks?' },
+  { id: 'eng-ci', category: 'Engineering', title: 'Continuous integration', topic: 'How are our build pipelines structured, which checks are mandatory and how are failures resolved?' },
 ];
 
 export function filterPlaybookStarters(
