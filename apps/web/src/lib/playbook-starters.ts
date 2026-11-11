@@ -32,6 +32,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'sec-access', category: 'Security', title: 'Access reviews', topic: 'How do we provision, review and revoke employee access across company systems?' },
   { id: 'sec-secrets', category: 'Security', title: 'Secret rotation', topic: 'What is our approved procedure for detecting, rotating and revoking exposed credentials?' },
   { id: 'sec-vulnerability', category: 'Security', title: 'Vulnerability triage', topic: 'How do we intake, prioritize, remediate and verify reported vulnerabilities?' },
+  { id: 'sec-vendor', category: 'Security', title: 'Vendor risk reviews', topic: 'How are third-party vendors evaluated for security, privacy and contractual risk?' },
 ];
 
 export function filterPlaybookStarters(
