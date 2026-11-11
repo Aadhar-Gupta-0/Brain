@@ -30,6 +30,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'eng-ci', category: 'Engineering', title: 'Continuous integration', topic: 'How are our build pipelines structured, which checks are mandatory and how are failures resolved?' },
   { id: 'eng-api', category: 'Engineering', title: 'API compatibility', topic: 'How do we version APIs, announce breaking changes and migrate existing consumers?' },
   { id: 'sec-access', category: 'Security', title: 'Access reviews', topic: 'How do we provision, review and revoke employee access across company systems?' },
+  { id: 'sec-secrets', category: 'Security', title: 'Secret rotation', topic: 'What is our approved procedure for detecting, rotating and revoking exposed credentials?' },
 ];
 
 export function filterPlaybookStarters(
