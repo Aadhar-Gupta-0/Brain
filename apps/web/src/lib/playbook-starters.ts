@@ -67,6 +67,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'mkt-campaign', category: 'Marketing', title: 'Campaign planning', topic: 'How do we plan, launch and measure cross-channel marketing campaigns?' },
   { id: 'mkt-brand', category: 'Marketing', title: 'Brand messaging', topic: 'What positioning, brand voice and approved claims guide our public communications?' },
   { id: 'mkt-content', category: 'Marketing', title: 'Editorial workflow', topic: 'How do we research, draft, approve and publish customer-facing content?' },
+  { id: 'mkt-attribution', category: 'Marketing', title: 'Attribution reporting', topic: 'What methods and limitations apply to measuring marketing-sourced pipeline and revenue?' },
 ];
 
 export function filterPlaybookStarters(
