@@ -65,6 +65,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'cs-renewal', category: 'Customer Success', title: 'Renewal planning', topic: 'What milestones and responsibilities guide enterprise subscription renewals?' },
   { id: 'cs-qbr', category: 'Customer Success', title: 'Business reviews', topic: 'How do we prepare customer business reviews with outcomes, usage and open risks?' },
   { id: 'mkt-campaign', category: 'Marketing', title: 'Campaign planning', topic: 'How do we plan, launch and measure cross-channel marketing campaigns?' },
+  { id: 'mkt-brand', category: 'Marketing', title: 'Brand messaging', topic: 'What positioning, brand voice and approved claims guide our public communications?' },
 ];
 
 export function filterPlaybookStarters(
