@@ -49,6 +49,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'fin-forecast', category: 'Finance', title: 'Revenue forecasting', topic: 'How do we build, update and reconcile forecasts for revenue and operating expenses?' },
   { id: 'fin-close', category: 'Finance', title: 'Monthly close', topic: 'What tasks, ownership and timelines govern our monthly financial close process?' },
   { id: 'fin-pricing', category: 'Finance', title: 'Pricing governance', topic: 'How are prices, discounts and nonstandard commercial terms evaluated and approved?' },
+  { id: 'people-onboard', category: 'People', title: 'Employee onboarding', topic: 'How do new employees receive equipment, access, training and clear first-month goals?' },
 ];
 
 export function filterPlaybookStarters(
