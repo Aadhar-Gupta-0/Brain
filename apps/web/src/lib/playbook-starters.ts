@@ -31,6 +31,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'eng-api', category: 'Engineering', title: 'API compatibility', topic: 'How do we version APIs, announce breaking changes and migrate existing consumers?' },
   { id: 'sec-access', category: 'Security', title: 'Access reviews', topic: 'How do we provision, review and revoke employee access across company systems?' },
   { id: 'sec-secrets', category: 'Security', title: 'Secret rotation', topic: 'What is our approved procedure for detecting, rotating and revoking exposed credentials?' },
+  { id: 'sec-vulnerability', category: 'Security', title: 'Vulnerability triage', topic: 'How do we intake, prioritize, remediate and verify reported vulnerabilities?' },
 ];
 
 export function filterPlaybookStarters(
