@@ -28,6 +28,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'eng-architecture', category: 'Engineering', title: 'Architecture decisions', topic: 'Where are our architecture decisions recorded, and how are trade-offs reviewed and approved?' },
   { id: 'eng-code-review', category: 'Engineering', title: 'Code review standards', topic: 'What are our documented expectations for pull request reviews, ownership and required checks?' },
   { id: 'eng-ci', category: 'Engineering', title: 'Continuous integration', topic: 'How are our build pipelines structured, which checks are mandatory and how are failures resolved?' },
+  { id: 'eng-api', category: 'Engineering', title: 'API compatibility', topic: 'How do we version APIs, announce breaking changes and migrate existing consumers?' },
 ];
 
 export function filterPlaybookStarters(
