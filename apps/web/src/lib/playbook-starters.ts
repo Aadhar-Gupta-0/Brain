@@ -74,6 +74,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'data-pipeline', category: 'Data', title: 'Data pipeline operations', topic: 'How do we monitor, troubleshoot and recover failing ingestion or transformation pipelines?' },
   { id: 'data-quality', category: 'Data', title: 'Data quality incidents', topic: 'How do we detect, quantify, remediate and prevent data quality regressions?' },
   { id: 'data-experiments', category: 'Data', title: 'Experiment measurement', topic: 'How do we design valid experiment analysis and interpret results before rollout?' },
+  { id: 'legal-contracts', category: 'Legal', title: 'Contract review process', topic: 'How are contracts drafted, reviewed, negotiated and approved before signing?' },
 ];
 
 export function filterPlaybookStarters(
