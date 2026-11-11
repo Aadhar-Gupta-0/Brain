@@ -52,6 +52,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'people-onboard', category: 'People', title: 'Employee onboarding', topic: 'How do new employees receive equipment, access, training and clear first-month goals?' },
   { id: 'people-offboard', category: 'People', title: 'Employee offboarding', topic: 'What are the approved steps for device return, access removal and knowledge handover?' },
   { id: 'people-performance', category: 'People', title: 'Performance reviews', topic: 'How are performance expectations set, feedback documented and review decisions calibrated?' },
+  { id: 'people-hiring', category: 'People', title: 'Hiring process', topic: 'How are job requirements, interviews, evaluation rubrics and hiring decisions managed?' },
 ];
 
 export function filterPlaybookStarters(
