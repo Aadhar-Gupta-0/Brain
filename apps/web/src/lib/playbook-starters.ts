@@ -70,6 +70,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'mkt-attribution', category: 'Marketing', title: 'Attribution reporting', topic: 'What methods and limitations apply to measuring marketing-sourced pipeline and revenue?' },
   { id: 'mkt-events', category: 'Marketing', title: 'Event follow-up', topic: 'What is our process for event planning, lead capture and post-event follow-up?' },
   { id: 'data-governance', category: 'Data', title: 'Data ownership', topic: 'Who owns our core datasets, and how are data quality and access issues escalated?' },
+  { id: 'data-metrics', category: 'Data', title: 'Metric definitions', topic: 'Where are our official KPI definitions, calculation rules and source tables maintained?' },
 ];
 
 export function filterPlaybookStarters(
