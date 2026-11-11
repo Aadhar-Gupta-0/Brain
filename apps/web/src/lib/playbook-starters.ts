@@ -24,6 +24,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'sec-incident', category: 'Security', title: 'Security incident response', topic: 'What is our documented security incident escalation, containment and reporting process?' },
   { id: 'ops-oncall', category: 'Operations', title: 'On-call handover', topic: 'How do on-call rotations, escalation and handover work for our services?' },
   { id: 'cs-onboarding', category: 'Customer Success', title: 'Customer onboarding', topic: 'What are the documented steps, ownership and milestones for onboarding a new customer?' },
+  { id: 'eng-rollback', category: 'Engineering', title: 'Rollback procedures', topic: 'How do we decide to roll back a failed deployment, execute the rollback and verify recovery?' },
 ];
 
 export function filterPlaybookStarters(
