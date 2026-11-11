@@ -36,6 +36,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'sec-privacy', category: 'Security', title: 'Personal data handling', topic: 'What policies govern the collection, retention, deletion and sharing of personal data?' },
   { id: 'prod-discovery', category: 'Product', title: 'Customer discovery', topic: 'What have customers told us about their problems, and how do those findings influence product decisions?' },
   { id: 'prod-roadmap', category: 'Product', title: 'Roadmap prioritization', topic: 'How do we prioritize roadmap proposals against customer impact, effort and strategic goals?' },
+  { id: 'prod-launch', category: 'Product', title: 'Product launch checklist', topic: 'What is the documented process for launching a feature, from readiness checks to release communications?' },
 ];
 
 export function filterPlaybookStarters(
