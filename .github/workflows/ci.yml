@@ -37,3 +37,7 @@ jobs:
         run: pnpm --filter @companybrain/api test
       - name: Search and retrieval regression tests
         run: pnpm --filter @companybrain/core test
+      - name: Dashboard TypeScript typecheck
+        run: pnpm --filter @companybrain/web typecheck
+      - name: Dashboard regression tests
+        run: pnpm --filter @companybrain/web test
