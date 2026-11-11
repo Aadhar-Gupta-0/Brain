@@ -50,6 +50,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'fin-close', category: 'Finance', title: 'Monthly close', topic: 'What tasks, ownership and timelines govern our monthly financial close process?' },
   { id: 'fin-pricing', category: 'Finance', title: 'Pricing governance', topic: 'How are prices, discounts and nonstandard commercial terms evaluated and approved?' },
   { id: 'people-onboard', category: 'People', title: 'Employee onboarding', topic: 'How do new employees receive equipment, access, training and clear first-month goals?' },
+  { id: 'people-offboard', category: 'People', title: 'Employee offboarding', topic: 'What are the approved steps for device return, access removal and knowledge handover?' },
 ];
 
 export function filterPlaybookStarters(
