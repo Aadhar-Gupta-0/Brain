@@ -81,6 +81,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'legal-compliance', category: 'Legal', title: 'Compliance evidence', topic: 'Where are regulatory obligations, control owners and audit evidence tracked?' },
   { id: 'exec-decisions', category: 'Leadership', title: 'Leadership decisions', topic: 'Where do we document major leadership decisions, assumptions and assigned follow-up actions?' },
   { id: 'exec-strategy', category: 'Leadership', title: 'Strategic priorities', topic: 'What strategic goals are currently approved, and how is progress reviewed?' },
+  { id: 'exec-board', category: 'Leadership', title: 'Board reporting', topic: 'How do we prepare board updates, validate metrics and track commitments?' },
 ];
 
 export function filterPlaybookStarters(
