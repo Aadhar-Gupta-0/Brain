@@ -35,6 +35,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'sec-vendor', category: 'Security', title: 'Vendor risk reviews', topic: 'How are third-party vendors evaluated for security, privacy and contractual risk?' },
   { id: 'sec-privacy', category: 'Security', title: 'Personal data handling', topic: 'What policies govern the collection, retention, deletion and sharing of personal data?' },
   { id: 'prod-discovery', category: 'Product', title: 'Customer discovery', topic: 'What have customers told us about their problems, and how do those findings influence product decisions?' },
+  { id: 'prod-roadmap', category: 'Product', title: 'Roadmap prioritization', topic: 'How do we prioritize roadmap proposals against customer impact, effort and strategic goals?' },
 ];
 
 export function filterPlaybookStarters(
