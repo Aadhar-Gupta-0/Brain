@@ -71,6 +71,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'mkt-events', category: 'Marketing', title: 'Event follow-up', topic: 'What is our process for event planning, lead capture and post-event follow-up?' },
   { id: 'data-governance', category: 'Data', title: 'Data ownership', topic: 'Who owns our core datasets, and how are data quality and access issues escalated?' },
   { id: 'data-metrics', category: 'Data', title: 'Metric definitions', topic: 'Where are our official KPI definitions, calculation rules and source tables maintained?' },
+  { id: 'data-pipeline', category: 'Data', title: 'Data pipeline operations', topic: 'How do we monitor, troubleshoot and recover failing ingestion or transformation pipelines?' },
 ];
 
 export function filterPlaybookStarters(
