@@ -80,6 +80,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'legal-ip', category: 'Legal', title: 'Intellectual property', topic: 'How are employee inventions, open-source usage and intellectual property approvals managed?' },
   { id: 'legal-compliance', category: 'Legal', title: 'Compliance evidence', topic: 'Where are regulatory obligations, control owners and audit evidence tracked?' },
   { id: 'exec-decisions', category: 'Leadership', title: 'Leadership decisions', topic: 'Where do we document major leadership decisions, assumptions and assigned follow-up actions?' },
+  { id: 'exec-strategy', category: 'Leadership', title: 'Strategic priorities', topic: 'What strategic goals are currently approved, and how is progress reviewed?' },
 ];
 
 export function filterPlaybookStarters(
