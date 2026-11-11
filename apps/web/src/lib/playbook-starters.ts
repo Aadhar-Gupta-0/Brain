@@ -51,6 +51,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'fin-pricing', category: 'Finance', title: 'Pricing governance', topic: 'How are prices, discounts and nonstandard commercial terms evaluated and approved?' },
   { id: 'people-onboard', category: 'People', title: 'Employee onboarding', topic: 'How do new employees receive equipment, access, training and clear first-month goals?' },
   { id: 'people-offboard', category: 'People', title: 'Employee offboarding', topic: 'What are the approved steps for device return, access removal and knowledge handover?' },
+  { id: 'people-performance', category: 'People', title: 'Performance reviews', topic: 'How are performance expectations set, feedback documented and review decisions calibrated?' },
 ];
 
 export function filterPlaybookStarters(
