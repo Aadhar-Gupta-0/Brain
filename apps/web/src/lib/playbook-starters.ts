@@ -59,6 +59,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'sales-handoff', category: 'Sales', title: 'Sales to success handoff', topic: 'How do account executives transfer commitments, risks and customer context to customer success?' },
   { id: 'sales-deals', category: 'Sales', title: 'Deal approvals', topic: 'What process governs pricing exceptions, contractual concessions and high-value deal approvals?' },
   { id: 'sales-loss', category: 'Sales', title: 'Win-loss analysis', topic: 'What have we learned from won and lost opportunities, and how do we act on those findings?' },
+  { id: 'cs-kickoff', category: 'Customer Success', title: 'Implementation kickoff', topic: 'How do we prepare and run a kickoff with a newly signed enterprise customer?' },
 ];
 
 export function filterPlaybookStarters(
