@@ -6,6 +6,10 @@ import { API_URL, type Citation } from '@/lib/api';
 import { Page } from '@/components/app-shell';
 import { Button, Input, EmptyState, Badge } from '@/components/ui';
 import { IconLayers, IconSparkle, IconArrowRight } from '@/components/icons';
+import {
+  PLAYBOOK_CATEGORIES, PLAYBOOK_STARTERS, filterPlaybookStarters,
+  type PlaybookCategory,
+} from '@/lib/playbook-starters';
 
 interface Playbook {
   title: string;
@@ -13,15 +17,11 @@ interface Playbook {
   citations: Citation[];
 }
 
-const SUGGESTIONS = [
-  'How we ship a release',
-  'Onboarding a new customer',
-  'Our stance on pricing',
-  'Incident response process',
-];
 
 export default function PlaybooksPage() {
   const [topic, setTopic] = useState('');
+  const [starterSearch, setStarterSearch] = useState('');
+  const [starterCategory, setStarterCategory] = useState<PlaybookCategory | 'All'>('All');
   const [busy, setBusy] = useState(false);
   const [playbook, setPlaybook] = useState<Playbook | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -160,17 +160,51 @@ export default function PlaybooksPage() {
 
       {!playbook && !busy && (
         <div className="mt-6">
-          <div className="flex flex-wrap gap-2">
-            {SUGGESTIONS.map((s) => (
-              <button
-                key={s}
-                onClick={() => generate(s)}
-                className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-surface px-3 text-sm text-ink-muted transition-colors hover:border-border-strong hover:text-ink sm:min-h-8"
+          <div className="rounded-xl border border-border bg-surface p-4">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <div>
+                <p className="text-sm font-semibold text-ink">Explore team playbook starters</p>
+                <p className="mt-0.5 text-xs text-ink-muted">
+                  {PLAYBOOK_STARTERS.length} questions, grounded only in your workspace memories
+                </p>
+              </div>
+            </div>
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row">
+              <Input
+                value={starterSearch}
+                onChange={(e) => setStarterSearch(e.target.value)}
+                aria-label="Search playbook starters"
+                placeholder="Search playbook topics..."
+                className="sm:flex-1"
+              />
+              <select
+                aria-label="Playbook department"
+                value={starterCategory}
+                onChange={(e) => setStarterCategory(e.target.value as PlaybookCategory | 'All')}
+                className="min-h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink"
               >
-                {s}
-                <IconArrowRight size={13} className="text-ink-faint" />
-              </button>
-            ))}
+                {PLAYBOOK_CATEGORIES.map((category) => (
+                  <option value={category} key={category}>{category}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex max-h-72 flex-wrap gap-2 overflow-y-auto">
+              {filterPlaybookStarters(starterSearch, starterCategory).map((starter) => (
+                <button
+                  key={starter.id}
+                  type="button"
+                  onClick={() => generate(starter.topic)}
+                  title={starter.topic}
+                  className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-border bg-bg-subtle px-3 text-left text-sm text-ink-muted transition-colors hover:border-border-strong hover:text-ink"
+                >
+                  {starter.title}
+                  <IconArrowRight size={13} className="text-ink-faint" />
+                </button>
+              ))}
+              {filterPlaybookStarters(starterSearch, starterCategory).length === 0 && (
+                <p className="text-sm text-ink-muted">No matching starters. Try another search or department.</p>
+              )}
+            </div>
           </div>
           <div className="mt-8">
             <EmptyState
