@@ -40,6 +40,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'prod-feedback', category: 'Product', title: 'Feedback triage', topic: 'How do we collect, classify and respond to product feedback from customers and teammates?' },
   { id: 'prod-experiments', category: 'Product', title: 'Product experiments', topic: 'How do we define hypotheses, success metrics and decisions for product experiments?' },
   { id: 'ops-incident', category: 'Operations', title: 'Service incident operations', topic: 'Who coordinates customer communications, incident ownership and follow-up during service disruptions?' },
+  { id: 'ops-change', category: 'Operations', title: 'Change management', topic: 'Which operational changes require review, approval, communication and a rollback plan?' },
 ];
 
 export function filterPlaybookStarters(
