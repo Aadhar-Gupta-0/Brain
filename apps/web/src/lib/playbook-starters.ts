@@ -38,6 +38,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'prod-roadmap', category: 'Product', title: 'Roadmap prioritization', topic: 'How do we prioritize roadmap proposals against customer impact, effort and strategic goals?' },
   { id: 'prod-launch', category: 'Product', title: 'Product launch checklist', topic: 'What is the documented process for launching a feature, from readiness checks to release communications?' },
   { id: 'prod-feedback', category: 'Product', title: 'Feedback triage', topic: 'How do we collect, classify and respond to product feedback from customers and teammates?' },
+  { id: 'prod-experiments', category: 'Product', title: 'Product experiments', topic: 'How do we define hypotheses, success metrics and decisions for product experiments?' },
 ];
 
 export function filterPlaybookStarters(
