@@ -83,6 +83,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'exec-strategy', category: 'Leadership', title: 'Strategic priorities', topic: 'What strategic goals are currently approved, and how is progress reviewed?' },
   { id: 'exec-board', category: 'Leadership', title: 'Board reporting', topic: 'How do we prepare board updates, validate metrics and track commitments?' },
   { id: 'exec-risk', category: 'Leadership', title: 'Enterprise risk register', topic: 'How are business-critical risks scored, assigned, mitigated and reviewed?' },
+  { id: 'exec-quarterly', category: 'Leadership', title: 'Quarterly planning', topic: 'How are company quarterly objectives proposed, reconciled and communicated across departments?' },
 ];
 
 export function filterPlaybookStarters(
