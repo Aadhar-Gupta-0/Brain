@@ -58,6 +58,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'sales-discovery', category: 'Sales', title: 'Sales discovery calls', topic: 'Which discovery questions, research and follow-up steps are expected before a product demonstration?' },
   { id: 'sales-handoff', category: 'Sales', title: 'Sales to success handoff', topic: 'How do account executives transfer commitments, risks and customer context to customer success?' },
   { id: 'sales-deals', category: 'Sales', title: 'Deal approvals', topic: 'What process governs pricing exceptions, contractual concessions and high-value deal approvals?' },
+  { id: 'sales-loss', category: 'Sales', title: 'Win-loss analysis', topic: 'What have we learned from won and lost opportunities, and how do we act on those findings?' },
 ];
 
 export function filterPlaybookStarters(
