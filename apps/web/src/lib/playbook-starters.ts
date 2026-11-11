@@ -63,6 +63,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'cs-health', category: 'Customer Success', title: 'Account health signals', topic: 'Which documented signals indicate customer adoption, satisfaction or churn risk?' },
   { id: 'cs-escalation', category: 'Customer Success', title: 'Customer escalation', topic: 'How are urgent customer issues prioritized, assigned and communicated through resolution?' },
   { id: 'cs-renewal', category: 'Customer Success', title: 'Renewal planning', topic: 'What milestones and responsibilities guide enterprise subscription renewals?' },
+  { id: 'cs-qbr', category: 'Customer Success', title: 'Business reviews', topic: 'How do we prepare customer business reviews with outcomes, usage and open risks?' },
 ];
 
 export function filterPlaybookStarters(
