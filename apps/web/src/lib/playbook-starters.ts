@@ -54,6 +54,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'people-performance', category: 'People', title: 'Performance reviews', topic: 'How are performance expectations set, feedback documented and review decisions calibrated?' },
   { id: 'people-hiring', category: 'People', title: 'Hiring process', topic: 'How are job requirements, interviews, evaluation rubrics and hiring decisions managed?' },
   { id: 'people-leave', category: 'People', title: 'Leave and coverage', topic: 'What are the policies for requesting leave and ensuring team coverage during absences?' },
+  { id: 'sales-qualification', category: 'Sales', title: 'Lead qualification', topic: 'What criteria determine whether a prospective customer is qualified for our sales process?' },
 ];
 
 export function filterPlaybookStarters(
