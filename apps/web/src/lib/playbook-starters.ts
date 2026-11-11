@@ -56,6 +56,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'people-leave', category: 'People', title: 'Leave and coverage', topic: 'What are the policies for requesting leave and ensuring team coverage during absences?' },
   { id: 'sales-qualification', category: 'Sales', title: 'Lead qualification', topic: 'What criteria determine whether a prospective customer is qualified for our sales process?' },
   { id: 'sales-discovery', category: 'Sales', title: 'Sales discovery calls', topic: 'Which discovery questions, research and follow-up steps are expected before a product demonstration?' },
+  { id: 'sales-handoff', category: 'Sales', title: 'Sales to success handoff', topic: 'How do account executives transfer commitments, risks and customer context to customer success?' },
 ];
 
 export function filterPlaybookStarters(
