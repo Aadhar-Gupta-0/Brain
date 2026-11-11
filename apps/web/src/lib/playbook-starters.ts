@@ -45,6 +45,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'ops-backups', category: 'Operations', title: 'Backup and restore', topic: 'Where are backup responsibilities, recovery targets and restore exercises documented?' },
   { id: 'ops-continuity', category: 'Operations', title: 'Business continuity', topic: 'What plans cover critical business processes when systems, offices or vendors become unavailable?' },
   { id: 'fin-budget', category: 'Finance', title: 'Annual budgeting', topic: 'How do departments propose, approve and monitor their annual budgets?' },
+  { id: 'fin-spend', category: 'Finance', title: 'Expense approvals', topic: 'What spending thresholds require approvals, receipts and budget-owner review?' },
 ];
 
 export function filterPlaybookStarters(
