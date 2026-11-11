@@ -61,6 +61,7 @@ export const PLAYBOOK_STARTERS: readonly PlaybookStarter[] = [
   { id: 'sales-loss', category: 'Sales', title: 'Win-loss analysis', topic: 'What have we learned from won and lost opportunities, and how do we act on those findings?' },
   { id: 'cs-kickoff', category: 'Customer Success', title: 'Implementation kickoff', topic: 'How do we prepare and run a kickoff with a newly signed enterprise customer?' },
   { id: 'cs-health', category: 'Customer Success', title: 'Account health signals', topic: 'Which documented signals indicate customer adoption, satisfaction or churn risk?' },
+  { id: 'cs-escalation', category: 'Customer Success', title: 'Customer escalation', topic: 'How are urgent customer issues prioritized, assigned and communicated through resolution?' },
 ];
 
 export function filterPlaybookStarters(
