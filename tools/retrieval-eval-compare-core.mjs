@@ -18,6 +18,16 @@ export function compareRetrievalReports(baseline, candidate, {maxRecallDrop = 0.
   if (baseline.cases !== candidate.cases || baseline.k !== candidate.k || baseline.mode !== candidate.mode) {
     throw new Error('Reports must use the same case count, k and retrieval mode');
   }
+  // A stable, user-supplied dataset identity prevents accidental comparisons
+  // between distinct named benchmarks. Older reports without IDs remain usable,
+  // but must be recognized as lacking this validation.
+  const leftDataset = baseline.datasetId;
+  const rightDataset = candidate.datasetId;
+  if ((leftDataset === undefined) !== (rightDataset === undefined) ||
+      (leftDataset !== undefined && (typeof leftDataset !== 'string' ||
+        !leftDataset || leftDataset !== rightDataset))) {
+    throw new Error('Reports must have the same dataset identity');
+  }
   for (const [name, value] of Object.entries({maxRecallDrop,maxNdcgDrop,maxP95IncreasePct})) {
     if (!Number.isFinite(value) || value < 0) throw new Error(name + ' must be nonnegative and finite');
   }
@@ -33,6 +43,7 @@ export function compareRetrievalReports(baseline, candidate, {maxRecallDrop = 0.
   if (latencyIncreasePct === null || latencyIncreasePct > maxP95IncreasePct) failures.push('p95 latency regressed');
   return {
     comparable: true,
+    datasetIdentityChecked: leftDataset !== undefined,
     cases: candidate.cases,
     k: candidate.k,
     mode: candidate.mode,
