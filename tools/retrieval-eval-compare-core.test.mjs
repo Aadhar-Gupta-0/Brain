@@ -45,3 +45,15 @@ test('does not expose queries, document IDs or raw records',()=>{
  const result=compareRetrievalReports({...baseline,secretQuery:'do not share'},candidate);
  assert.equal(JSON.stringify(result).includes('do not share'),false);
 });
+
+test('same explicitly named dataset is allowed and reported as checked',()=>{
+  const result=compareRetrievalReports({...baseline,datasetId:'incident-runbook-v1'}, {...candidate,datasetId:'incident-runbook-v1'});
+  assert.equal(result.datasetIdentityChecked,true);
+});
+test('mismatched and partial dataset IDs fail closed',()=>{
+  assert.throws(()=>compareRetrievalReports({...baseline,datasetId:'runbook-v1'}, {...candidate,datasetId:'runbook-v2'}),/same dataset identity/);
+  assert.throws(()=>compareRetrievalReports(baseline,{...candidate,datasetId:'runbook-v1'}),/same dataset identity/);
+});
+test('legacy comparisons are explicitly marked as lacking corpus verification',()=>{
+  assert.equal(compareRetrievalReports(baseline,candidate).datasetIdentityChecked,false);
+});
