@@ -20,7 +20,7 @@ Treat queries and relevance labels as private workspace information. Do not comm
 ```bash
 export BRAIN_API_URL=http://127.0.0.1:3333
 export BRAIN_API_TOKEN='<your personal API key>'
-node tools/retrieval-eval.mjs --cases /path/to/private-cases.jsonl --k 10 --output /tmp/retrieval-summary.json
+node tools/retrieval-eval.mjs --cases /path/to/private-cases.jsonl --k 10 --output /tmp/retrieval-summary.json --dataset-id private-eval-v1
 ```
 
 The tool sends the questions only to the configured CompanyBrain API under **your existing bearer credential**, so normal organization-scoped retrieval applies. Remote endpoints must use HTTPS. The output contains only aggregate statistics, not raw queries or token values.
@@ -70,3 +70,7 @@ The command exits with status **0** when the thresholds pass, **1** for a regres
 **Caveat:** The checker verifies that both reports have the same case count, `k`, and retrieval mode; it cannot prove they used the same query corpus or labels. Preserve the evaluation corpus separately and version it privately.
 
 The command is designed to be used in release gates; do not claim improved search quality until results have been collected from a meaningful real-world dataset.
+
+### Dataset identity safety
+
+For reliable release comparisons, give each internally versioned benchmark fixture a stable, non-sensitive `--dataset-id` (such as `private-eval-v1`). Both reports must carry the same ID. The comparator will reject mismatches and report `datasetIdentityChecked: true` when both IDs match. Older reports without IDs remain comparable, but show `datasetIdentityChecked: false`. The identifier is a declaration by the evaluator, not cryptographic proof that the underlying cases are identical.
