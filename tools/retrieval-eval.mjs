@@ -7,13 +7,14 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { rankMetrics, summarizeEvaluations, validateEvalCase } from './retrieval-eval-core.mjs';
 
 function cliArgs(argv) {
-  const args = { file: undefined, k: 10, output: undefined, minRecall: undefined };
+  const args = { file: undefined, k: 10, output: undefined, minRecall: undefined, datasetId: undefined };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === '--cases') args.file = argv[++i];
     else if (arg === '--k') args.k = Number(argv[++i]);
     else if (arg === '--output') args.output = argv[++i];
     else if (arg === '--min-recall') args.minRecall = Number(argv[++i]);
+    else if (arg === '--dataset-id') args.datasetId = argv[++i];
     else throw new Error('Unknown or missing argument: ' + arg);
   }
   if (!args.file || !Number.isSafeInteger(args.k) || args.k < 1 || args.k > 100) {
@@ -21,6 +22,9 @@ function cliArgs(argv) {
   }
   if (args.minRecall !== undefined && (!Number.isFinite(args.minRecall) || args.minRecall < 0 || args.minRecall > 1)) {
     throw new Error('--min-recall must be between 0 and 1');
+  }
+  if (args.datasetId !== undefined && !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{2,79}$/.test(args.datasetId)) {
+    throw new Error('--dataset-id must be a stable, non-sensitive identifier (3–80 characters)');
   }
   return args;
 }
@@ -67,6 +71,7 @@ async function main() {
     generatedAt: new Date().toISOString(),
     mode: 'hybrid',
     k: options.k,
+    ...(options.datasetId ? { datasetId: options.datasetId } : {}),
     ...summarizeEvaluations(results),
   };
   const json = JSON.stringify(summary, null, 2);
